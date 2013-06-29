@@ -180,8 +180,8 @@ static void accept_connection(int listen)
 
 	namesize = sizeof(from);
 	if ((fd = accept(listen, (struct sockaddr *) &from, &namesize)) < 0) {
-		if (errno != EINTR && errno != EAGAIN) {
-			perror("accept(incoming_socket)");
+		if (errno != EINTR && errno != EAGAIN && errno != ECONNABORTED) {
+			log_error("accept(incoming_socket) %s", strerror(errno));
 			exit(1);
 		}
 		return;
@@ -254,7 +254,7 @@ void event_loop(int timeout)
 			continue;
 		} else if (res < 0) {
 			if (res < 0 && errno != EINTR) {
-				perror("poll()");
+				log_error("poll() %s", strerror(errno));
 				exit(1);
 			}
 			continue;
