@@ -1,0 +1,44 @@
+diff --git b/kernel/block-io.c a/kernel/block-io.c
+index e24f1ca..4c6d8bd 100644
+--- b/kernel/block-io.c
++++ a/kernel/block-io.c
+@@ -56,7 +56,6 @@ blockio_make_request(struct iet_volume *volume, struct tio *tio, int rw)
+ 	struct request_queue *bdev_q = bdev_get_queue(bio_data->bdev);
+ 	struct tio_work *tio_work;
+ 	struct bio *tio_bio = NULL, *bio = NULL, *biotail = NULL;
+-	struct blk_plug plug;
+ 
+ 	u32 offset = tio->offset;
+ 	u32 size = tio->size;
+@@ -119,8 +118,6 @@ blockio_make_request(struct iet_volume *volume, struct tio *tio, int rw)
+ 		}
+ 	}
+ 
+-	blk_start_plug(&plug);
+-
+ 	/* Walk the list, submitting bios 1 by 1 */
+ 	while (tio_bio) {
+ 		bio = tio_bio;
+@@ -130,7 +127,8 @@ blockio_make_request(struct iet_volume *volume, struct tio *tio, int rw)
+ 		submit_bio(rw, bio);
+ 	}
+ 
+-	blk_finish_plug(&plug);
++	if (bdev_q && bdev_q->unplug_fn)
++		bdev_q->unplug_fn(bdev_q);
+ 
+ 	wait_for_completion(&tio_work->tio_complete);
+ 
+diff --git b/kernel/iotype.c a/kernel/iotype.c
+index 9fd69fa..b3d6117 100644
+--- b/kernel/iotype.c
++++ a/kernel/iotype.c
+@@ -9,7 +9,7 @@
+ #include "iscsi_dbg.h"
+ 
+ static LIST_HEAD(iotypes);
+-static DEFINE_RWLOCK(iotypes_lock);
++static rwlock_t iotypes_lock = RW_LOCK_UNLOCKED;
+ 
+ static struct iotype *find_iotype(const char *name)
+ {

@@ -1,0 +1,13 @@
+diff --git b/kernel/wthread.c a/kernel/wthread.c
+index 940de9d..f7c8b1d 100644
+--- b/kernel/wthread.c
++++ a/kernel/wthread.c
+@@ -71,7 +71,7 @@ static int worker_thread(void *arg)
+ 		put_io_context(current->io_context);
+ 
+ 	if (!(current->io_context = ioc_task_link(info->wthread_ioc)))
+-		info->wthread_ioc = get_task_io_context(current, GFP_KERNEL, -1);
++		info->wthread_ioc = get_io_context(GFP_KERNEL, -1);
+ 
+ 	add_wait_queue(&info->wthread_sleep, &wait);
+ 

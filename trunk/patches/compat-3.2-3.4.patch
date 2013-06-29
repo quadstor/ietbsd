@@ -1,0 +1,22 @@
+diff --git b/kernel/wthread.c a/kernel/wthread.c
+index 55d7321..940de9d 100644
+--- b/kernel/wthread.c
++++ a/kernel/wthread.c
+@@ -65,16 +65,13 @@ static int worker_thread(void *arg)
+ 	struct worker_thread_info *info = wt->w_info;
+ 	struct iscsi_cmnd *cmnd;
+ 	struct iscsi_conn *conn;
+-
+ 	DECLARE_WAITQUEUE(wait, current);
+ 
+ 	if (current->io_context)
+ 		put_io_context(current->io_context);
+ 
+-	if (!info->wthread_ioc)
++	if (!(current->io_context = ioc_task_link(info->wthread_ioc)))
+ 		info->wthread_ioc = get_task_io_context(current, GFP_KERNEL, -1);
+-	ioc_task_link(info->wthread_ioc);
+-	current->io_context = info->wthread_ioc;
+ 
+ 	add_wait_queue(&info->wthread_sleep, &wait);
+ 

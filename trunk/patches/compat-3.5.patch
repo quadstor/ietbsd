@@ -1,0 +1,24 @@
+diff --git b/kernel/event.c a/kernel/event.c
+index 1c5f3a4..0266101 100644
+--- b/kernel/event.c
++++ a/kernel/event.c
+@@ -68,17 +68,8 @@ int event_send(u32 tid, u64 sid, u32 cid, u32 state, int atomic)
+ 
+ int event_init(void)
+ {
+-	struct netlink_kernel_cfg cfg = {
+-		.groups = 1,
+-		.input = event_recv_skb,
+-		.cb_mutex = NULL,
+-		.bind = NULL,
+-	};
+-
+-	nl = netlink_kernel_create(&init_net,
+-				   NETLINK_IET,
+-				   THIS_MODULE,
+-				   &cfg);
++	nl = netlink_kernel_create(&init_net, NETLINK_IET, 1, event_recv_skb,
++				   NULL, THIS_MODULE);
+ 	if (!nl)
+ 		return -ENOMEM;
+ 	else
