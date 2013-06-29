@@ -5,9 +5,9 @@
 # $FreeBSD: ports/net/iet/Makefile,v 1.10 2013/01/25 21:51:37 svnexp Exp $
 #
 
-PORTNAME=	ietbsd
+PORTNAME=	iet
 PORTVERSION=	1.4.20.2
-PORTREVISION=	6
+PORTREVISION=	7
 CATEGORIES=	net
 #MASTER_SITES=	SF/iscsitarget/iscsitarget/${PORTVERSION}/
 #DISTNAME=	iscsitarget-${PORTVERSION}

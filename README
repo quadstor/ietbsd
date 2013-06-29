@@ -11,7 +11,7 @@ There are few differences for the FreeBSD implementation
 Issues related to this port can be submitted at https://github.com/quadstor/ietbsd/issues
 
 Installation
-Remember that the iet target can be installed from the ports tree (/usr/ports/net/iet). The package is installed as ietbsd-1... to avoid confusion
+Remember that the iet target can be installed from the ports tree (/usr/ports/net/iet).
 
 Documentation related to IET itself can be got from the main site. The followign steps only describe building and installing the target on FreeBSD
 
