@@ -53,7 +53,6 @@
 #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <geom/geom.h>
-#include "hash.h"
 
 #define IET_PAGE_SHIFT		16
 #define IET_PAGE_SIZE		(1UL << IET_PAGE_SHIFT)
