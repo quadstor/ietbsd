@@ -699,6 +699,15 @@ map_result(int *result, struct uio *uio, int len, int waitall)
 	*result = res;
 }
 
+#define BITS_PER_LONG	__LONG_BIT
+
+#define PRIME		0x9e37fffffffc0001UL
+
+static inline unsigned long hash_long(unsigned long val, int bits)
+{
+	return ((val * PRIME) >> (BITS_PER_LONG - bits));
+}
+
 typedef struct vnode iodev_t;
 #define bio_put		g_destroy_bio		/* Note it really not an equivalent, g_destroy_bio destroys the bio, while bio_put decrements ref count and frees only if refcount is zero */
 
