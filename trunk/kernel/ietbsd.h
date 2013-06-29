@@ -707,13 +707,20 @@ map_result(int *result, struct uio *uio, int len, int waitall)
 	*result = res;
 }
 
+/* From linux/hash.h */
 #define BITS_PER_LONG	__LONG_BIT
 
-#define PRIME		0x9e37fffffffc0001UL
+#if BITS_PER_LONG == 32
+#define GOLDEN_RATIO_PRIME	0x9e370001UL
+#elif BITS_PER_LONG == 64
+#define GOLDEN_RATIO_PRIME	0x9e37fffffffc0001UL
+#else
+#error "Invalid bits per long"
+#endif
 
 static inline unsigned long hash_long(unsigned long val, int bits)
 {
-	return ((val * PRIME) >> (BITS_PER_LONG - bits));
+	return ((val * GOLDEN_RATIO_PRIME) >> (BITS_PER_LONG - bits));
 }
 
 typedef struct vnode iodev_t;
