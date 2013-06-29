@@ -181,10 +181,12 @@ static void iet_socket_bind(struct iscsi_conn *conn)
 	set_fs(oldfs);
 #else
 	/* conn set prior to this call for FreeBSD */
-	SOCK_LOCK(conn->sock);
+	SOCKBUF_LOCK(&conn->sock->so_rcv);
 	soupcall_set(conn->sock, SO_RCV, iet_data_ready, conn);
+	SOCKBUF_UNLOCK(&conn->sock->so_rcv);
+	SOCKBUF_LOCK(&conn->sock->so_snd);
 	soupcall_set(conn->sock, SO_SND, iet_write_space, conn);
-	SOCK_UNLOCK(conn->sock);
+	SOCKBUF_UNLOCK(&conn->sock->so_snd);
 	sopt.sopt_dir = SOPT_SET;
 	sopt.sopt_level = IPPROTO_TCP;
 	sopt.sopt_name = TCP_NODELAY;

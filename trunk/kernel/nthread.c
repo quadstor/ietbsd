@@ -799,10 +799,14 @@ static void close_conn(struct iscsi_conn *conn)
 
 	fput(conn->file);
 #else
-	SOCK_LOCK(conn->sock);
+	SOCKBUF_LOCK(&conn->sock->so_rcv);
 	soupcall_clear(conn->sock, SO_RCV);
+	SOCKBUF_UNLOCK(&conn->sock->so_rcv);
+	
+	SOCKBUF_LOCK(&conn->sock->so_snd);
 	soupcall_clear(conn->sock, SO_SND);
-	SOCK_UNLOCK(conn->sock);
+	SOCKBUF_UNLOCK(&conn->sock->so_snd);
+
 	fputsock(conn->sock);
 	fdrop(conn->file, curthread);
 #endif
