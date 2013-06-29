@@ -663,10 +663,19 @@ extern struct module *ietmod;
 static inline int
 try_module_get(struct module *mod)
 {
+	MOD_XLOCK;
 	module_reference(mod);
+	MOD_XUNLOCK;
 	return 1;
 }
-#define module_put	module_release
+
+static inline void
+module_put(struct module *mod)
+{
+	MOD_XLOCK;
+	module_release(mod);
+	MOD_XUNLOCK;
+}
 
 static inline void
 uio_fill(struct uio *uio, struct iovec *iov, int iovcnt, ssize_t resid, int rw)
