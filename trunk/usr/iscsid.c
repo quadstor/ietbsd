@@ -491,17 +491,19 @@ static void login_finish(struct connection *conn)
 						ISCSI_STATUS_TARGET_ERROR);
 					return;
 				}
-				session = NULL;
+				conn->session = NULL;
 			} else if (req->sid.id.tsih != session->sid.id.tsih) {
 				/* fail the login */
 				login_rsp_ini_err(conn,
 					ISCSI_STATUS_SESSION_NOT_FOUND);
 				return;
+			} else {
+				/* add connection to existing session */
+				log_debug(1, "connection %u added to session %#" PRIx64,
+					conn->cid, req->sid.id64);
+				conn->session = session;
+				session->conn_cnt++;
 			}
-			/* add connection to existing session */
-			log_debug(1, "connection %u added to session %#" PRIx64,
-				conn->cid, req->sid.id64);
-			conn->session = session;
 		} else if (req->sid.id.tsih) {
 			/* fail the login */
 			login_rsp_ini_err(conn, ISCSI_STATUS_SESSION_NOT_FOUND);

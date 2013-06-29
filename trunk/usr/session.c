@@ -84,13 +84,20 @@ int session_exist(u32 t_tid, u64 t_sid)
 int session_create(struct connection *conn)
 {
 	struct session *session;
+	char *initiator;
 	static u16 tsih = 1;
 	int err;
 
 	if (!conn->session) {
-		session = session_alloc(conn->tid);
-		if (!session)
+		initiator = strdup(conn->initiator);
+		if (!initiator)
 			return -ENOMEM;
+
+		session = session_alloc(conn->tid);
+		if (!session) {
+			free(initiator);
+			return -ENOMEM;
+		}
 
 		session->sid = conn->sid;
 		session->sid.id.tsih = tsih;
@@ -99,9 +106,10 @@ int session_create(struct connection *conn)
 			session->sid.id.tsih++;
 
 		tsih = session->sid.id.tsih + 1;
-		session->initiator = strdup(conn->initiator);
+		session->initiator = initiator;
 
 		conn->session = session;
+		session->conn_cnt = 1;
 		conn->sid = session->sid;
 	} else {
 		session = conn->session;
