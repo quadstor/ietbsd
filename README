@@ -1,0 +1,27 @@
+This is the FreeBSD port of iSCSI Enterprise Target (IET
+
+The aim of this repository is to maintain the port in sync with the trunk of the Linux target. Ports specific makefiles, intallations scripts are copied rom /usr/ports/net/iet/ as the aim is that this repository be merged back to ports from time to time with ease.
+
+The documentation from the main site (http://iscsitarget.sourceforge.net/)
+There are few differences for the FreeBSD implementation
+
+1. The installation prefix for FreeBSD is /usr/local/etc
+2. Fileio mode only works with files and not block devices
+
+Issues related to this port can be submitted at https://github.com/quadstor/ietbsd/issues
+
+Installation
+Remember that the iet target can be installed from the ports tree (/usr/ports/net/iet). The package is installed as ietbsd-1... to avoid confusion
+
+git clone https://github.com/quadstor/ietbsd
+
+cd ietbsd
+make && make install
+
+Edit /usr/local/etc/iet/ietd.conf and save
+
+/usr/local/etc/rc.d/ietd onestart to start
+/usr/local/etc/rc.d/ietd onestop to stop
+
+Or to start/stop on system startup/shutdown 
+ietd_enable=YES to /etc/rc.conf 

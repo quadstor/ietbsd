@@ -1,0 +1,5 @@
+*.[oa]
+*˜
+*.ko
+trunk/usr/ietd
+trunk/usr/ietadm
