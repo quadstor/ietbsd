@@ -410,14 +410,14 @@ static void build_write_same_response(struct iscsi_cmnd *cmnd) {
 	struct tio *target_tio;
 	struct iet_volume *lu = cmnd->lun;
 	struct tio_iterator iter;
-	u32 MAX_IO_SIZE = 1 << 30; /* 1MByte */
-	u32 length, medium_length;
+	u32 MAX_IO_SIZE = 1 << 20; /* 1MByte */
+	u64 length, medium_length;
 	loff_t offset;
 	u8 *data_addr;
 	u32 data_size;
 
 	length = cmnd->tio->size;
-	medium_length = (u32)((loff_t) lu->blk_cnt << lu->blk_shift);
+	medium_length = ((loff_t) lu->blk_cnt << lu->blk_shift);
 	offset = cmnd->tio->offset;
 
 	data_addr = page_address(cmnd->tio->pvec[0]);
@@ -427,7 +427,7 @@ static void build_write_same_response(struct iscsi_cmnd *cmnd) {
 	if (length == 0) {
 		length = medium_length - offset + 1;
 		dprintk(D_VAAI,
-			"write to end, calculated length = %u\n", length);
+			"write to end, calculated length = %llu\n", (unsigned long long)length);
 	}
 
 	if (length + offset > medium_length) {
@@ -441,7 +441,6 @@ static void build_write_same_response(struct iscsi_cmnd *cmnd) {
 	/* Fill target_tio with data from request, because it's all
 	   same data, we can just reuse it later with differnt offset. */
 	target_tio = tio_alloc(get_pgcnt(min_t(u32, length, MAX_IO_SIZE)));
-	tio_get(target_tio);
 
 	tio_init_iterator(target_tio, &iter);
 	while(iter.pg_idx < target_tio->pg_cnt) {
@@ -449,7 +448,7 @@ static void build_write_same_response(struct iscsi_cmnd *cmnd) {
 	}
 
 	while (length > 0) {
-		u32 to_write = min_t(u32, length, MAX_IO_SIZE);
+		u32 to_write = (u32)min_t(u64, length, MAX_IO_SIZE);
 		tio_set(target_tio, to_write, offset);
 
 		/* submit to IO layer */
@@ -466,8 +465,8 @@ static void build_write_same_response(struct iscsi_cmnd *cmnd) {
 		length -= to_write;
 		offset += to_write;
 		dprintk(D_VAAI,
-			"Committed %u bytes, %u left, offset %llu\n",
-			to_write, length, (unsigned long long)offset);
+			"Committed %u bytes, %llu left, offset %llu\n",
+			to_write, (unsigned long long)length, (unsigned long long)offset);
 	}
 
 	tio_put(target_tio);

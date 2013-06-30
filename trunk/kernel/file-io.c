@@ -53,7 +53,7 @@ static int fileio_make_request(struct iet_volume *lu, struct tio *tio, int rw)
 	size = tio->size;
 	ppos = tio->offset;
 
-	for (i = 0; i < tio->pg_cnt; i++) {
+	for (i = 0; i < tio->pg_cnt && size; i++) {
 		page = tio->pvec[i];
 		assert(page);
 		buf = page_address(page);

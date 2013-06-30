@@ -141,7 +141,7 @@ blockio_make_request(struct iet_volume *volume, struct tio *tio, int rw)
 	init_completion(&tio_work->tio_complete);
 
 	/* Main processing loop, allocate and fill all bios */
-	while (tio_index < tio->pg_cnt) {
+	while (size && tio_index < tio->pg_cnt) {
 		bio = bio_get_new(min(max_pages, BIO_MAX_PAGES), bio_data->bdev, blockio_bio_endio, tio_work, ppos);
 		if (!bio) {
 			err = -ENOMEM;
@@ -160,7 +160,7 @@ blockio_make_request(struct iet_volume *volume, struct tio *tio, int rw)
 		atomic_inc(&tio_work->bios_remaining);
 
 		/* Loop for filling bio */
-		while (tio_index < tio->pg_cnt) {
+		while (size && tio_index < tio->pg_cnt) {
 			unsigned int bytes = IET_PAGE_SIZE;
 
 			if (bytes > size)
