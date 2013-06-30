@@ -13,7 +13,7 @@ unsigned long debug_enable_flags;
 unsigned long worker_thread_pool_size;
 
 static slab_cache_t *iscsi_cmnd_cache;
-static u8 dummy_data[PAGE_SIZE];
+static u8 dummy_data[IET_PAGE_SIZE];
 
 #ifdef LINUX
 static int ctr_major;

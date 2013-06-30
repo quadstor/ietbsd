@@ -288,28 +288,25 @@ static void digest_data(struct hash_desc *hash, struct iscsi_cmnd *cmnd,
 static void digest_data(struct crc32c_ctx *mctx, struct iscsi_cmnd *cmnd,
 			struct tio *tio, u32 offset, u8 *crc)
 {
-	u32 size, length;
-	int i, idx, count;
+	struct scatterlist *sg = cmnd->conn->hash_sg;
+	u32 size, length, npages;
+	int i, idx;
+	unsigned int nbytes;
 
 	size = cmnd->pdu.datasize;
-	size = (size + 3) & ~3;
+	nbytes = size = (size + 3) & ~3;
+	npages = size >> PAGE_CACHE_SHIFT;
 
-	offset += tio->offset;
 	idx = offset >> PAGE_CACHE_SHIFT;
 	offset &= ~PAGE_CACHE_MASK;
-	count = get_pgcnt(size);
-	assert(idx + count <= tio->pg_cnt);
 
-	assert(count <= ISCSI_CONN_IOV_MAX);
+	BUG_ON(idx + npages > tio->pg_cnt);
+	BUG_ON(npages > ISCSI_CONN_IOV_MAX);
 
 	crc32c_init(mctx);
 
-	for (i = 0; size; i++) {
-		if (offset + size > PAGE_CACHE_SIZE)
-			length = PAGE_CACHE_SIZE - offset;
-		else
-			length = size;
-
+	for (i = 0; size > 0; i++) {
+		length = min_t(u32, PAGE_CACHE_SIZE - offset, size);
 		crc32c_update(mctx, (u8*)(page_address(tio->pvec[idx + i])) + offset, length);
 		size -= length;
 		offset = 0;

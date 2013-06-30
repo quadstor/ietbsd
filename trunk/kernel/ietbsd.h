@@ -736,9 +736,7 @@ static inline int
 bio_add_page(struct bio *bio, page_t *page, unsigned int len, unsigned int offset)
 {
 	if (bio->bio_data)
-	{
 		return 0;
-	}
 
 	/* remember that page is malloced data */
 	bio->bio_data = (caddr_t)(page) + offset;

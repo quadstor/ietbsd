@@ -72,18 +72,18 @@ tio_add_data(struct tio_iterator *iter,
 	     size_t len)
 {
 	struct tio *tio = iter->tio;
-	const size_t to_copy = min(tio->pg_cnt * PAGE_SIZE - iter->size, len);
+	const size_t to_copy = min(tio->pg_cnt * IET_PAGE_SIZE - iter->size, len);
 	size_t residual = to_copy;
 
 	BUG_ON(tio->size < iter->size);
 
 	do {
 		u8 *ptr = (u8 *)page_address(iter->tio->pvec[iter->pg_idx]) + iter->pg_off;
-		size_t chunk = min(PAGE_SIZE - iter->pg_off, residual);
+		size_t chunk = min(IET_PAGE_SIZE - iter->pg_off, residual);
 		memcpy(ptr, data, chunk);
 		residual -= chunk;
 		if (residual ||
-		    iter->pg_off + chunk == PAGE_SIZE) {
+		    iter->pg_off + chunk == IET_PAGE_SIZE) {
 			++iter->pg_idx;
 			iter->pg_off = 0;
 		} else

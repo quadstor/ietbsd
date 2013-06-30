@@ -161,7 +161,7 @@ blockio_make_request(struct iet_volume *volume, struct tio *tio, int rw)
 
 		/* Loop for filling bio */
 		while (tio_index < tio->pg_cnt) {
-			unsigned int bytes = PAGE_SIZE;
+			unsigned int bytes = IET_PAGE_SIZE;
 
 			if (bytes > size)
 				bytes = size;

@@ -3,3 +3,17 @@
 *.ko
 trunk/usr/ietd
 trunk/usr/ietadm
+trunk/freebsd/cmd/ietadm/ietadm.8.gz
+trunk/freebsd/cmd/ietadm/ietd
+trunk/freebsd/cmd/ietd/ietadm
+trunk/freebsd/cmd/ietd/ietd.8.gz
+trunk/freebsd/cmd/ietd/ietd.conf.5.gz
+trunk/freebsd/iet/@
+trunk/freebsd/iet/export_syms
+trunk/freebsd/iet/machine
+trunk/freebsd/iet/vnode_if.h
+trunk/freebsd/iet/vnode_if_newproto.h
+trunk/freebsd/iet/vnode_if_typedef.h
+trunk/freebsd/iet/x86
+work/
+
