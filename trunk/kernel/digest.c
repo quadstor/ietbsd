@@ -288,7 +288,6 @@ static void digest_data(struct hash_desc *hash, struct iscsi_cmnd *cmnd,
 static void digest_data(struct crc32c_ctx *mctx, struct iscsi_cmnd *cmnd,
 			struct tio *tio, u32 offset, u8 *crc)
 {
-	struct scatterlist *sg = cmnd->conn->hash_sg;
 	u32 size, length, npages;
 	int i, idx;
 	unsigned int nbytes;
