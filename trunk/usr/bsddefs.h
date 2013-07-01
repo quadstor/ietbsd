@@ -1,6 +1,8 @@
 #ifndef BSDDEFS_H_
 #define BSDDEFS_H_  1
 
+#include <sys/param.h>
+
 #define SOL_TCP		IPPROTO_TCP
 #define TCP_CORK	TCP_NOPUSH
 
@@ -8,6 +10,7 @@
 #define s6_addr16 __u6_addr.__u6_addr16
 #define s6_addr32 __u6_addr.__u6_addr32
 
+#if __FreeBSD_version < 1000028
 static inline char *
 strchrnul (const char *s, int c_in)
 {
@@ -17,5 +20,6 @@ strchrnul (const char *s, int c_in)
 
 	return (char *) s;
 }
+#endif
 
 #endif

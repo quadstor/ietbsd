@@ -11,6 +11,7 @@
 #include <sys/malloc.h>
 #include <sys/lock.h>
 #include <sys/mutex.h>
+#include <sys/rwlock.h>
 #include <sys/bio.h>
 #include <sys/time.h>
 #include <sys/queue.h>
