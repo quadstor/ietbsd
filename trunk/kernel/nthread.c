@@ -91,7 +91,7 @@ static int is_data_available(struct iscsi_conn *conn)
 		return 0;
 #endif
 
-	error = soo_ioctl(&filetmp, FIONREAD, &avail, NULL, curthread);
+	error = fo_ioctl(&filetmp, FIONREAD, &avail, NULL, curthread);
 	if (error)
 		return 0;
 
@@ -352,7 +352,7 @@ sk_wspace_available(struct iscsi_conn *conn)
 	filetmp.f_data = conn->sock;
 	filetmp.f_cred = NULL;
 
-	error = soo_ioctl(&filetmp, FIONSPACE, &avail, NULL, curthread);
+	error = fo_ioctl(&filetmp, FIONSPACE, &avail, NULL, curthread);
 	if (error)
 		return 0;
 
